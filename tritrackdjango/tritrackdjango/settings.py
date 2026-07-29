@@ -31,7 +31,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'tritrack.urls'
+ROOT_URLCONF = 'tritrackdjango.urls'
 
 TEMPLATES = [
     {
@@ -49,7 +49,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tritrack.wsgi.application'
+WSGI_APPLICATION = 'tritrackdjango.wsgi.application'
 
 DATABASES = {
     'default': {
