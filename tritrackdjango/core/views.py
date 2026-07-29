@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 
 def index(request):
-    return render(request, 'tritrack.html')
+    return render(request, 'TRITRACK.html')
 
 @csrf_exempt
 def chat(request):
