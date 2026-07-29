@@ -1,1 +1,1 @@
-gunicorn tritrackdjango.wsgi:application
+web: gunicorn tritrackdjango.tritrackdjango.wsgi:application
