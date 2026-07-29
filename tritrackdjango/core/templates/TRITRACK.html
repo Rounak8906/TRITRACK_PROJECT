@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TriTrack — Instinct · Mystic · Valor</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --i:#C8840A;--ibg:#FEF3E2;--itext:#7A4F06;--iborder:#E8A020;
+  --m:#1A6BBF;--mbg:#EAF3FF;--mtext:#0D4A8A;--mborder:#3A8BE0;
+  --v:#B02828;--vbg:#FDEAEA;--vtext:#7A1A1A;--vborder:#D94040;
+  --g:#15956A;--gbg:#E6F7F1;--gtext:#0A5C40;
+  --surface:#FFFFFF;--bg:#F4F5F8;--border:#E4E6EC;--border2:#EEEFF4;
+  --text:#0F1117;--sub:#6B7280;--sub2:#9CA3AF;
+  --radius:14px;--radius-sm:8px;--radius-xs:6px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;}
+
+/* SHELL */
+.shell{display:flex;height:100vh;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:224px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
+.logo-wrap{padding:20px 20px 16px;}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--i),var(--m));display:flex;align-items:center;justify-content:center;font-size:16px;}
+.logo-name{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:-.02em;}
+.logo-sub{font-size:11px;color:var(--sub);letter-spacing:.02em;}
+.save-pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:3px 9px;border-radius:20px;margin-top:8px;font-weight:500;}
+.save-ok{background:var(--gbg);color:var(--gtext);}
+.save-busy{background:var(--ibg);color:var(--itext);}
+.nav{padding:8px 12px;flex:1;}
+.nav-section{font-size:10px;color:var(--sub2);letter-spacing:.08em;text-transform:uppercase;padding:12px 8px 6px;}
+.navbtn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:10px;border:none;background:transparent;cursor:pointer;font-size:13px;color:var(--sub);font-family:'Inter',sans-serif;font-weight:500;transition:all .15s;text-align:left;margin-bottom:2px;}
+.navbtn .n-ico{font-size:16px;width:22px;text-align:center;}
+.navbtn:hover{background:var(--bg);color:var(--text);}
+.navbtn.active-t{background:var(--ibg);color:var(--itext);}
+.navbtn.active-c{background:var(--mbg);color:var(--mtext);}
+.navbtn.active-h{background:var(--vbg);color:var(--vtext);}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border);}
+.clear-btn{font-size:11px;color:var(--sub);background:none;border:1px solid var(--border);border-radius:var(--radius-xs);padding:4px 12px;cursor:pointer;width:100%;font-family:'Inter',sans-serif;}
+.clear-btn:hover{border-color:var(--v);color:var(--vtext);}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;background:var(--bg);}
+.page{display:none;padding:24px;}.page.active{display:block;}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:20px;}
+.page-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;}
+.page-sub{font-size:13px;color:var(--sub);margin-top:3px;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow);}
+
+/* LABELS */
+.lbl{font-size:10px;color:var(--sub);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
+.field-lbl{font-size:11px;color:var(--sub);font-weight:500;margin-bottom:6px;}
+
+/* TASKS */
+.tlist{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.trow{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;transition:border-color .12s;}
+.trow:hover{border-color:var(--border2);}
+.ttop{display:flex;align-items:center;gap:10px;}
+.chk{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;transition:all .15s;}
+.chk.on{background:var(--g);border-color:var(--g);color:white;}
+.tmeta{flex:1;min-width:0;}
+.tname{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tname.x{color:var(--sub);text-decoration:line-through;font-weight:400;}
+.ttype-tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:20px;background:var(--bg);color:var(--sub);margin-top:2px;font-weight:500;}
+.tpills{display:flex;gap:4px;flex-shrink:0;}
+.score-pill{font-size:10px;padding:2px 6px;border-radius:20px;font-weight:600;}
+.pi{background:var(--ibg);color:var(--itext);}.pm{background:var(--mbg);color:var(--mtext);}.pv{background:var(--vbg);color:var(--vtext);}
+.del{background:none;border:none;cursor:pointer;color:var(--sub2);font-size:14px;padding:3px;border-radius:4px;line-height:1;transition:color .12s;}
+.del:hover{color:var(--vtext);}
+.rarea{margin-top:10px;padding-top:10px;border-top:1px solid var(--border2);display:flex;flex-direction:column;gap:8px;}
+.rrow{display:flex;align-items:center;gap:10px;}
+.rlbl{font-size:11px;font-weight:600;width:76px;flex-shrink:0;}
+.lm{color:var(--mtext);}.lv{color:var(--vtext);}
+.stars{display:flex;gap:3px;}
+.star{font-size:16px;cursor:pointer;color:#D1D5DB;line-height:1;transition:color .1s;}
+.sm{color:var(--m);}.sv{color:var(--v);}
+.rhint{font-size:11px;color:var(--sub);}
+
+/* ADD AREA */
+.add-card{background:var(--surface);border:1.5px dashed var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:14px;}
+.add-row{display:flex;gap:8px;margin-bottom:8px;}
+.add-row input,.add-row select{font-size:13px;padding:8px 11px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .12s;}
+.add-row input:focus,.add-row select:focus{border-color:var(--m);}
+.add-row input{flex:1;}
+.add-row button{font-size:13px;padding:8px 16px;border-radius:var(--radius-xs);border:1px solid var(--m);cursor:pointer;background:var(--mbg);color:var(--mtext);font-family:'Inter',sans-serif;font-weight:600;white-space:nowrap;}
+.chips{display:flex;flex-wrap:wrap;gap:5px;}
+.chip{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);cursor:pointer;color:var(--sub);background:var(--bg);font-weight:500;transition:all .12s;}
+.chip:hover{background:var(--ibg);color:var(--itext);border-color:var(--iborder);}
+
+/* QUALITY PANELS */
+.qpanel{border-radius:var(--radius);padding:16px;margin-bottom:14px;border:1px solid;}
+.qp-i{background:linear-gradient(135deg,#FFFCF5,#FEF8EC);border-color:var(--iborder);}
+.qp-m{background:linear-gradient(135deg,#F5FAFF,#EAF3FF);border-color:var(--mborder);}
+.qp-v{background:linear-gradient(135deg,#FFF5F5,#FDEAEA);border-color:var(--vborder);}
+.qhead{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(0,0,0,.06);}
+.qhead-badge{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.qbadge-i{background:var(--ibg);}
+.qbadge-m{background:var(--mbg);}
+.qbadge-v{background:var(--vbg);}
+.qhead-text{flex:1;}
+.qhead-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;}
+.qi .qhead-title{color:var(--itext);}
+.qm .qhead-title{color:var(--mtext);}
+.qv .qhead-title{color:var(--vtext);}
+.qhead-sub{font-size:11px;color:var(--sub);margin-top:1px;}
+.qtag{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;flex-shrink:0;}
+.qtag-i{background:var(--ibg);color:#854F0B;}
+.qtag-m{background:var(--mbg);color:var(--m);}
+.qtag-v{background:var(--vbg);color:var(--v);}
+.qfields{display:flex;flex-direction:column;gap:12px;}
+.qfield{display:flex;flex-direction:column;gap:6px;}
+
+/* SELECTORS */
+.sel-row{display:flex;gap:6px;flex-wrap:wrap;}
+.sbtn{padding:5px 12px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-size:12px;color:var(--sub);background:var(--surface);font-family:'Inter',sans-serif;font-weight:500;transition:all .12s;}
+.sbtn:hover{border-color:var(--sub);}
+.on-i{background:var(--ibg);border-color:var(--iborder);color:var(--itext)!important;}
+.on-m{background:var(--mbg);border-color:var(--mborder);color:var(--mtext)!important;}
+.on-v{background:var(--vbg);border-color:var(--vborder);color:var(--vtext)!important;}
+.on-g{background:var(--gbg);border-color:var(--g);color:var(--gtext)!important;}
+.energy-row{display:flex;gap:6px;align-items:center;}
+.elv{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--sub);font-weight:600;transition:all .15s;}
+.elv.on{background:var(--i);color:white;border-color:var(--i);box-shadow:0 0 0 3px rgba(200,132,10,.15);}
+.elbl{font-size:11px;color:var(--sub);margin-left:4px;}
+.time-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.time-row input{font-size:13px;padding:7px 10px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'Inter',sans-serif;outline:none;}
+.time-row input:focus{border-color:var(--i);}
+.time-row span{font-size:12px;color:var(--sub);}
+.txt-inp{width:100%;font-size:13px;padding:8px 11px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .12s;}
+.txt-inp:focus{border-color:var(--m);}
+.skill-row{display:flex;gap:8px;}
+.skill-row input{font-size:13px;padding:7px 10px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'Inter',sans-serif;outline:none;}
+.skill-row input:first-child{flex:1;}
+.skill-row input[type=number]{width:80px;}
+.tog-row{display:flex;gap:8px;}
+.tbtn{flex:1;padding:8px;border-radius:var(--radius-xs);border:1px solid var(--border);cursor:pointer;font-size:12px;font-weight:600;color:var(--sub);background:var(--surface);font-family:'Inter',sans-serif;text-align:center;transition:all .12s;}
+.tbtn.on-yes{background:var(--gbg);border-color:var(--g);color:var(--gtext);}
+.tbtn.on-no{background:var(--bg);color:var(--sub);}
+.workout-types{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.mood-row{display:flex;gap:10px;}
+.mood-item{text-align:center;}
+.mood-btn{font-size:22px;padding:5px 8px;border-radius:10px;cursor:pointer;border:1px solid transparent;background:none;transition:all .15s;display:block;line-height:1;}
+.mood-btn:hover{background:var(--bg);}
+.mood-btn.on-i{background:var(--ibg);border-color:var(--iborder);}
+.mood-lbl{font-size:10px;color:var(--sub2);margin-top:3px;font-weight:500;}
+
+/* ANALYZE BTN */
+.analyze-btn{width:100%;padding:12px;border-radius:var(--radius-sm);border:none;background:linear-gradient(135deg,var(--m),#2474CC);color:white;font-size:14px;cursor:pointer;font-weight:700;margin-bottom:16px;font-family:'Space Grotesk',sans-serif;letter-spacing:.01em;box-shadow:0 2px 8px rgba(26,107,191,.3);transition:all .15s;}
+.analyze-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(26,107,191,.4);}
+.analyze-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+/* RESULTS */
+.scores-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.sc{border-radius:var(--radius-sm);padding:14px;text-align:center;}
+.sci{background:linear-gradient(135deg,#FEF8EC,#FEF3DC);border:1px solid var(--iborder);}
+.scm{background:linear-gradient(135deg,#EAF3FF,#DCEEFF);border:1px solid var(--mborder);}
+.scv{background:linear-gradient(135deg,#FDEAEA,#FCDCDC);border:1px solid var(--vborder);}
+.sclbl{font-size:10px;font-weight:700;letter-spacing:.05em;margin-bottom:6px;}
+.sci .sclbl{color:#854F0B;}.scm .sclbl{color:var(--m);}.scv .sclbl{color:var(--v);}
+.scn{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;}
+.sci .scn{color:var(--itext);}.scm .scn{color:var(--mtext);}.scv .scn{color:var(--vtext);}
+.scs{font-size:10px;margin-top:3px;font-weight:500;}
+.sci .scs{color:#854F0B;}.scm .scs{color:var(--m);}.scv .scs{color:var(--v);}
+.pie-wrap{display:flex;align-items:center;gap:20px;padding:16px;}
+.leg{display:flex;flex-direction:column;gap:10px;flex:1;}
+.legi{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--sub);font-weight:500;}
+.ldot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.ai-card{border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;background:linear-gradient(135deg,#F8FAFF,#F0F4FF);border:1px solid #C8D8F4;}
+.ai-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.ai-head-txt{font-size:12px;font-weight:700;color:var(--mtext);letter-spacing:.03em;text-transform:uppercase;}
+.ai-body{font-size:13px;color:#374151;line-height:1.75;}
+
+/* CALENDAR */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.cal-nav{display:flex;align-items:center;gap:12px;}
+.cal-nav button{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xs);padding:5px 12px;cursor:pointer;font-size:14px;color:var(--text);transition:all .12s;}
+.cal-nav button:hover{background:var(--bg);}
+.cal-month-title{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:20px;}
+.cal-dh{font-size:11px;color:var(--sub2);text-align:center;padding:5px 0;font-weight:600;letter-spacing:.05em;}
+.cal-day{min-height:48px;border-radius:10px;border:1px solid transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:6px 4px;transition:all .12s;}
+.cal-day:hover{background:var(--bg);border-color:var(--border);}
+.cal-day.is-today{border-color:var(--m);background:var(--mbg);}
+.cal-day.is-sel{background:var(--ibg);border-color:var(--iborder);}
+.cal-day.other-m{opacity:.3;}
+.cal-dn{font-size:13px;font-weight:500;}
+.cal-day.is-today .cal-dn{color:var(--mtext);font-weight:700;}
+.cal-day.is-sel .cal-dn{color:var(--itext);font-weight:700;}
+.cal-dots{display:flex;gap:2px;margin-top:4px;}
+.cal-dot{width:5px;height:5px;border-radius:50%;}
+.day-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.day-panel-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;}
+.day-score-pills{display:flex;gap:6px;flex-wrap:wrap;}
+.time-slots{display:flex;flex-direction:column;}
+.slot{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border2);}
+.slot:last-child{border-bottom:none;}
+.slot-time{font-size:11px;color:var(--sub2);width:52px;flex-shrink:0;padding-top:3px;font-weight:600;font-variant-numeric:tabular-nums;}
+.slot-content{flex:1;}
+.slot-task{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:8px;padding:6px 10px;margin-bottom:5px;font-size:13px;font-weight:500;}
+.slot-task-name{flex:1;}
+.slot-task-type{font-size:10px;color:var(--sub);font-weight:500;}
+.slot-add{font-size:11px;color:var(--sub2);cursor:pointer;padding:3px 8px;border-radius:6px;border:1px dashed var(--border);background:transparent;display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;transition:all .12s;}
+.slot-add:hover{background:var(--bg);color:var(--sub);}
+.slot-inp{display:flex;gap:6px;align-items:center;margin-bottom:4px;}
+.slot-inp input,.slot-inp select{font-size:12px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'Inter',sans-serif;outline:none;}
+.slot-inp input{flex:1;}
+.slot-inp input:focus,.slot-inp select:focus{border-color:var(--m);}
+.slot-inp button{font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--border);cursor:pointer;background:var(--surface);color:var(--text);font-family:'Inter',sans-serif;font-weight:600;}
+.cal-date-label{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;margin-bottom:12px;}
+
+/* HISTORY */
+.range-row{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.rbtn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:transparent;color:var(--sub);font-family:'Inter',sans-serif;font-weight:500;transition:all .12s;}
+.rbtn:hover{background:var(--bg);}
+.rbtn.active{background:var(--mbg);border-color:var(--mborder);color:var(--mtext);}
+.crng{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);}
+.crng input{width:48px;font-size:12px;padding:5px 7px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);text-align:center;font-family:'Inter',sans-serif;outline:none;}
+.avg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.avg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;box-shadow:var(--shadow);}
+.avg-n{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:2px;}
+.avg-ni{color:var(--itext);}.avg-nm{color:var(--mtext);}.avg-nv{color:var(--vtext);}
+.avg-l{font-size:10px;color:var(--sub);font-weight:600;letter-spacing:.04em;text-transform:uppercase;}
+.dcards{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.dcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;box-shadow:var(--shadow);}
+.dhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.dname{font-size:14px;font-weight:600;}
+.dmeta{font-size:11px;color:var(--sub);}
+.dbars{display:flex;flex-direction:column;gap:7px;}
+.dbar{display:flex;align-items:center;gap:10px;}
+.dbarlbl{font-size:11px;width:52px;color:var(--sub);font-weight:600;}
+.dtrack{flex:1;height:7px;background:var(--bg);border-radius:4px;overflow:hidden;}
+.dfill{height:100%;border-radius:4px;transition:width .6s ease;}
+.fi{background:linear-gradient(90deg,var(--i),#E8A020);}.fm{background:linear-gradient(90deg,var(--m),#3A8BE0);}.fv{background:linear-gradient(90deg,var(--v),#D94040);}
+.dval{font-size:11px;color:var(--sub);width:34px;text-align:right;font-weight:600;}
+.nodata{font-size:13px;color:var(--sub);padding:20px 0;text-align:center;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo-wrap">
+    <div class="logo">
+      <div class="logo-mark">⚡</div>
+      <span class="logo-name">TriTrack</span>
+    </div>
+    <div class="logo-sub">INSTINCT · MYSTIC · VALOR</div>
+    <div class="save-pill save-ok" id="savePill">✓ All saved</div>
+  </div>
+  <div class="nav">
+    <div class="nav-section">Sections</div>
+    <button class="navbtn active-t" onclick="sw('today')"><span class="n-ico">⚡</span>Today</button>
+    <button class="navbtn" onclick="sw('calendar')"><span class="n-ico">📅</span>Calendar</button>
+    <button class="navbtn" onclick="sw('history')"><span class="n-ico">📈</span>History</button>
+  </div>
+  <div class="sidebar-footer">
+    <button class="clear-btn" onclick="clearData()">🗑 Clear all data</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TODAY -->
+  <div class="page active" id="p-today">
+    <div class="page-header">
+      <div class="page-title">Today</div>
+      <div class="page-sub" id="todayDate"></div>
+    </div>
+    <div class="lbl">Tasks</div>
+    <div class="tlist" id="tlist"></div>
+    <div class="add-card">
+      <div class="add-row">
+        <input id="tinput" placeholder="Add a task..." />
+        <select id="ttype">
+          <option value="work">Work</option><option value="learning">Learning</option>
+          <option value="health">Health</option><option value="creative">Creative</option>
+          <option value="personal">Personal</option><option value="social">Social</option>
+        </select>
+        <button onclick="addTask()">+ Add</button>
+      </div>
+      <div class="chips" id="chipbox"></div>
+    </div>
+
+    <!-- INSTINCT PANEL -->
+    <div class="qpanel qp-i qi">
+      <div class="qhead">
+        <div class="qhead-badge qbadge-i">⚡</div>
+        <div class="qhead-text">
+          <div class="qhead-title">Instinct</div>
+          <div class="qhead-sub">Whole-day execution score</div>
+        </div>
+        <span class="qtag qtag-i">AUTO + INPUTS</span>
+      </div>
+      <div class="qfields">
+        <div class="qfield">
+          <div class="field-lbl">🌅 Wake-up time & sleep hours</div>
+          <div class="time-row">
+            <input type="time" id="wakeup" value="07:00" onchange="saveState()"/>
+            <span>woke up ·</span>
+            <input type="number" id="sleephrs" min="1" max="12" value="7" style="width:65px;" onchange="saveState()"/>
+            <span>hrs sleep</span>
+          </div>
+        </div>
+        <div class="qfield">
+          <div class="field-lbl">⚡ Energy level today</div>
+          <div class="energy-row">
+            <div class="elv" onclick="selE(1)" id="e1">1</div>
+            <div class="elv" onclick="selE(2)" id="e2">2</div>
+            <div class="elv" onclick="selE(3)" id="e3">3</div>
+            <div class="elv" onclick="selE(4)" id="e4">4</div>
+            <div class="elv" onclick="selE(5)" id="e5">5</div>
+            <span class="elbl" id="elbl">Not rated</span>
+          </div>
+        </div>
+        <div class="qfield">
+          <div class="field-lbl">⏱️ Time wasted today</div>
+          <div class="sel-row" id="wasteBtns">
+            <div class="sbtn" onclick="selW(this,'none')">None 🎯</div>
+            <div class="sbtn" onclick="selW(this,'30min')">~30 min</div>
+            <div class="sbtn" onclick="selW(this,'1hr')">~1 hr</div>
+            <div class="sbtn" onclick="selW(this,'2hr')">~2 hrs</div>
+            <div class="sbtn" onclick="selW(this,'3hr+')">3+ hrs 😬</div>
+          </div>
+        </div>
+        <div class="qfield">
+          <div class="field-lbl">😄 Mood today</div>
+          <div class="mood-row" id="moodBtns">
+            <div class="mood-item"><button class="mood-btn" onclick="selM(this,'terrible')">😞</button><div class="mood-lbl">Terrible</div></div>
+            <div class="mood-item"><button class="mood-btn" onclick="selM(this,'low')">😕</button><div class="mood-lbl">Low</div></div>
+            <div class="mood-item"><button class="mood-btn" onclick="selM(this,'okay')">😐</button><div class="mood-lbl">Okay</div></div>
+            <div class="mood-item"><button class="mood-btn" onclick="selM(this,'good')">🙂</button><div class="mood-lbl">Good</div></div>
+            <div class="mood-item"><button class="mood-btn" onclick="selM(this,'great')">😄</button><div class="mood-lbl">Great</div></div>
+          </div>
+        </div>
+        <div class="qfield">
+          <div class="field-lbl">✅ Tasks completed</div>
+          <div style="font-size:13px;color:var(--sub);font-weight:500;" id="taskcount">Mark tasks done above — auto tracked.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MYSTIC PANEL -->
+    <div class="qpanel qp-m qm">
+      <div class="qhead">
+        <div class="qhead-badge qbadge-m">💙</div>
+        <div class="qhead-text">
+          <div class="qhead-title">Mystic</div>
+          <div class="qhead-sub">Personal gain & growth</div>
+        </div>
+        <span class="qtag qtag-m">STARS + INPUTS</span>
+      </div>
+      <div class="qfields">
+        <div class="qfield">
+          <div class="field-lbl">📖 Did you read or learn something new?</div>
+          <div class="tog-row">
+            <div class="tbtn" id="readY" onclick="selTog('read','yes')">✓ Yes</div>
+            <div class="tbtn" id="readN" onclick="selTog('read','no')">✗ No</div>
+          </div>
+        </div>
+        <div class="qfield">
+          <div class="field-lbl">💭 One thing you learned today</div>
+          <input class="txt-inp" id="reflection" placeholder="e.g. Learned about compound interest..." onchange="saveState()"/>
+        </div>
+        <div class="qfield">
+          <div class="field-lbl">🎯 Skill practiced + duration (mins)</div>
+          <div class="skill-row">
+            <input id="skillname" placeholder="e.g. Python, guitar, writing..." onchange="saveState()"/>
+            <input type="number" id="skillmins" min="0" max="480" placeholder="mins" onchange="saveState()"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALOR PANEL -->
+    <div class="qpanel qp-v qv">
+      <div class="qhead">
+        <div class="qhead-badge qbadge-v">❤️</div>
+        <div class="qhead-text">
+          <div class="qhead-title">Valor</div>
+          <div class="qhead-sub">Discipline & focus</div>
+        </div>
+        <span class="qtag qtag-v">STARS + INPUTS</span>
+      </div>
+      <div class="qfields">
+        <div class="qfield">
+          <div class="field-lbl">💪 Workout / physical effort today?</div>
+          <div class="tog-row">
+            <div class="tbtn" id="workoutY" onclick="selTog('workout','yes')">✓ Yes</div>
+            <div class="tbtn" id="workoutN" onclick="selTog('workout','no')">✗ No</div>
+          </div>
+          <div class="workout-types" id="workoutTypes" style="display:none;">
+            <div class="sbtn" onclick="selWT(this,'gym')">🏋️ Gym</div>
+            <div class="sbtn" onclick="selWT(this,'run')">🏃 Run</div>
+            <div class="sbtn" onclick="selWT(this,'yoga')">🧘 Yoga</div>
+            <div class="sbtn" onclick="selWT(this,'walk')">🚶 Walk</div>
+            <div class="sbtn" onclick="selWT(this,'sports')">⚽ Sports</div>
+            <div class="sbtn" onclick="selWT(this,'home')">🏠 Home workout</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="analyze-btn" id="abtn" onclick="analyze()">✦ Analyze & score my day</button>
+
+    <div id="res" style="display:none;">
+      <div class="lbl">Today's scores</div>
+      <div class="scores-grid">
+        <div class="sc sci"><div class="sclbl">⚡ INSTINCT</div><div class="scn" id="sI">—</div><div class="scs">whole day</div></div>
+        <div class="sc scm"><div class="sclbl">💙 MYSTIC</div><div class="scn" id="sM">—</div><div class="scs">personal gain</div></div>
+        <div class="sc scv"><div class="sclbl">❤️ VALOR</div><div class="scn" id="sV">—</div><div class="scs">discipline</div></div>
+      </div>
+      <div class="card">
+        <div class="pie-wrap">
+          <canvas id="pie" width="140" height="140" style="flex-shrink:0;"></canvas>
+          <div class="leg">
+            <div class="legi"><div class="ldot" style="background:var(--i);"></div><span id="li">Instinct — 0%</span></div>
+            <div class="legi"><div class="ldot" style="background:var(--m);"></div><span id="lm">Mystic — 0%</span></div>
+            <div class="legi"><div class="ldot" style="background:var(--v);"></div><span id="lv">Valor — 0%</span></div>
+            <div class="legi" style="margin-top:8px;border-top:1px solid var(--border2);padding-top:8px;">
+              <div class="ldot" style="background:var(--bg);border:1px solid var(--border);"></div>
+              <span id="lt" style="font-weight:600;color:var(--text);">Done — 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-head"><span style="font-size:15px;">🧠</span><span class="ai-head-txt">AI Coach</span></div>
+        <div class="ai-body" id="aib">...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="page" id="p-calendar">
+    <div class="page-header">
+      <div class="page-title">Calendar</div>
+      <div class="page-sub">Schedule tasks by time slot · 7 AM – 11 PM</div>
+    </div>
+    <div class="cal-header">
+      <div class="cal-nav">
+        <button onclick="prevM()">‹</button>
+        <span class="cal-month-title" id="calMonth"></span>
+        <button onclick="nextM()">›</button>
+      </div>
+      <div style="font-size:12px;color:var(--sub);">Tap a day to schedule tasks</div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div id="calDayPanel"></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="page" id="p-history">
+    <div class="page-header">
+      <div class="page-title">History</div>
+      <div class="page-sub">Analyze any custom range of days</div>
+    </div>
+    <div class="range-row">
+      <button class="rbtn active" onclick="setR(2,this)">Last 2 days</button>
+      <button class="rbtn" onclick="setR(5,this)">Last 5 days</button>
+      <button class="rbtn" onclick="setR(7,this)">Last 7 days</button>
+      <div class="crng">
+        <span>Custom:</span>
+        <input type="number" id="cdays" min="1" max="30" value="3"/>
+        <button class="rbtn" onclick="setRC()">Go</button>
+      </div>
+    </div>
+    <div class="avg-grid">
+      <div class="avg-card"><div class="avg-n avg-ni" id="avgi">—</div><div class="avg-l">Instinct</div></div>
+      <div class="avg-card"><div class="avg-n avg-nm" id="avgm">—</div><div class="avg-l">Mystic</div></div>
+      <div class="avg-card"><div class="avg-n avg-nv" id="avgv">—</div><div class="avg-l">Valor</div></div>
+      <div class="avg-card"><div class="avg-n" id="avgd" style="color:var(--text);">—</div><div class="avg-l">Avg Done</div></div>
+    </div>
+    <div class="lbl" id="hlbl">Day breakdown</div>
+    <div class="dcards" id="dcards"></div>
+    <button class="analyze-btn" onclick="analyzeH()">✦ AI analysis for this range</button>
+    <div class="ai-card" id="haic" style="display:none;">
+      <div class="ai-head"><span style="font-size:15px;">🧠</span><span class="ai-head-txt">Pattern Analysis</span></div>
+      <div class="ai-body" id="haib">...</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+/* ─────────── CONSTANTS ─────────── */
+const MH=['','Barely gained','Learned a little','Good progress','Solid growth','Highly enriching'];
+const VH=['','Very distracted','Somewhat focused','Fairly disciplined','Strong focus','Fully locked in'];
+const EL=['','Very low 😴','Low 😑','Moderate 🙂','High ⚡','Peak 🔥'];
+const WS={'none':10,'30min':8,'1hr':6,'2hr':4,'3hr+':2};
+const MS_MAP={'terrible':2,'low':4,'okay':6,'good':8,'great':10};
+const DN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DNS=['Su','Mo','Tu','We','Th','Fr','Sa'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const PS=[
+  {n:'Deep work session',t:'work'},{n:'Read a book chapter',t:'learning'},
+  {n:'Morning workout',t:'health'},{n:'Journaling',t:'personal'},
+  {n:'Team meeting',t:'work'},{n:'Watch a tutorial',t:'learning'},
+  {n:'Side project work',t:'creative'},{n:'Meditation',t:'personal'},
+  {n:'Cold shower',t:'health'},{n:'Flight / Travel',t:'personal'},
+  {n:'Doctor appointment',t:'health'},{n:'Call with family',t:'social'}
+];
+const SLOTS=[];
+for(let h=7;h<=23;h++){
+  const ap=h<12?'AM':h===12?'PM':'PM';
+  const d=h<=12?h:h-12;
+  SLOTS.push(`${d}:00 ${ap}`);
+}
+
+/* ─────────── STATE ─────────── */
+let tasks=[
+  {id:1,name:'Morning workout',type:'health',done:false,mr:0,vr:0,scores:null},
+  {id:2,name:'Read 20 pages',type:'learning',done:false,mr:0,vr:0,scores:null},
+  {id:3,name:'Team standup',type:'work',done:false,mr:0,vr:0,scores:null},
+  {id:4,name:'Deep work — project',type:'work',done:false,mr:0,vr:0,scores:null}
+];
+let ds={waste:null,mood:null,energy:0,wakeup:'07:00',sleep:7,read:null,reflection:'',skill:'',skillMins:0,workout:null,workoutType:null};
+let hist={},calTasks={},nid=50,todayS=null,selR=2;
+let calY=new Date().getFullYear(),calM=new Date().getMonth();
+let selCalDate=null,addingSlot=null;
+const today=new Date();
+
+/* ─────────── HELPERS ─────────── */
+function dk(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function tk(){return dk(today);}
+
+/* Seed sample history */
+(()=>{
+  for(let i=1;i<=7;i++){
+    const d=new Date(today);d.setDate(d.getDate()-i);const k=dk(d);
+    hist[k]={date:k,dayName:DN[d.getDay()],scores:{instinct:Math.round(5+Math.random()*4),mystic:Math.round(4+Math.random()*5),valor:Math.round(4+Math.random()*5)},done:Math.round(3+Math.random()*5),total:Math.round(6+Math.random()*3)};
+  }
+})();
+
+/* ─────────── STORAGE ─────────── */
+const SK={tasks:'tt-tasks',ds:'tt-ds',hist:'tt-hist',cal:'tt-cal',nid:'tt-nid',scores:'tt-scores'};
+let saveTimer=null;
+
+function setSavePill(s){
+  const el=document.getElementById('savePill');if(!el)return;
+  el.textContent=s==='ok'?'✓ All saved':'● Saving...';
+  el.className='save-pill '+(s==='ok'?'save-ok':'save-busy');
+}
+
+function saveState(){
+  setSavePill('busy');clearTimeout(saveTimer);saveTimer=setTimeout(persistAll,700);
+}
+
+async function persistAll(){
+  try{
+    localStorage.setItem(SK.tasks,JSON.stringify(tasks));
+    localStorage.setItem(SK.ds,JSON.stringify(ds));
+    localStorage.setItem(SK.hist,JSON.stringify(hist));
+    localStorage.setItem(SK.cal,JSON.stringify(calTasks));
+    localStorage.setItem(SK.nid,JSON.stringify(nid));
+    if(todayS)localStorage.setItem(SK.scores,JSON.stringify(todayS));
+    setSavePill('ok');
+  }catch(e){setSavePill('ok');}
+}
+
+function loadAll(){
+  try{
+    const t=localStorage.getItem(SK.tasks);if(t)tasks=JSON.parse(t);
+    const d=localStorage.getItem(SK.ds);if(d)Object.assign(ds,JSON.parse(d));
+    const h=localStorage.getItem(SK.hist);if(h)hist=JSON.parse(h);
+    const c=localStorage.getItem(SK.cal);if(c)calTasks=JSON.parse(c);
+    const n=localStorage.getItem(SK.nid);if(n)nid=JSON.parse(n);
+    const s=localStorage.getItem(SK.scores);if(s)todayS=JSON.parse(s);
+  }catch(e){}
+}
+
+function clearData(){
+  if(!confirm('Clear all TriTrack data? This cannot be undone.'))return;
+  Object.values(SK).forEach(k=>localStorage.removeItem(k));
+  tasks=[{id:1,name:'Morning workout',type:'health',done:false,mr:0,vr:0,scores:null}];
+  ds={waste:null,mood:null,energy:0,wakeup:'07:00',sleep:7,read:null,reflection:'',skill:'',skillMins:0,workout:null,workoutType:null};
+  hist={};calTasks={};nid=50;todayS=null;
+  renderT();document.getElementById('res').style.display='none';setSavePill('ok');
+}
+
+/* ─────────── NAV ─────────── */
+function sw(tab){
+  document.querySelectorAll('.navbtn').forEach((b,i)=>{
+    b.className='navbtn';
+    if(['today','calendar','history'][i]===tab)b.className='navbtn active-'+tab[0];
+  });
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p-'+tab).classList.add('active');
+  if(tab==='calendar')renderCal();
+  if(tab==='history')renderH();
+}
+
+/* ─────────── TODAY ─────────── */
+function renderChips(){
+  document.getElementById('chipbox').innerHTML=PS.map(p=>`<div class="chip" onclick="addP('${p.n.replace(/'/g,"\\'")}','${p.t}')">${p.n}</div>`).join('');
+}
+
+function addP(n,t){
+  if(tasks.find(x=>x.name===n))return;
+  tasks.push({id:nid++,name:n,type:t,done:false,mr:0,vr:0,scores:null});
+  renderT();saveState();
+}
+
+function addTask(){
+  const inp=document.getElementById('tinput'),n=inp.value.trim();
+  if(!n)return;
+  tasks.push({id:nid++,name:n,type:document.getElementById('ttype').value,done:false,mr:0,vr:0,scores:null});
+  inp.value='';renderT();saveState();
+}
+
+function tog(id){
+  const t=tasks.find(t=>t.id===id);
+  if(t){t.done=!t.done;t.scores=null;renderT();saveState();}
+}
+
+function delT(id){tasks=tasks.filter(t=>t.id!==id);renderT();saveState();}
+
+function setR2(id,type,val){
+  const t=tasks.find(t=>t.id===id);if(!t)return;
+  if(type==='m')t.mr=val;else t.vr=val;
+  t.scores=null;renderT();saveState();
+}
+
+function sHTML(tid,type,cur,lc){
+  return[1,2,3,4,5].map(n=>`<span class="star ${n<=cur?lc:''}" onclick="setR2(${tid},'${type}',${n})" onmouseover="hov(${tid},'${type}',${n})" onmouseout="res2(${tid},'${type}')">\u2605</span>`).join('');
+}
+
+function hov(id,t,n){
+  const lc=t==='m'?'sm':'sv';
+  const el=document.getElementById(t+id);if(!el)return;
+  el.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle(lc,i<n));
+}
+
+function res2(id,t){
+  const tk2=tasks.find(x=>x.id===id);if(!tk2)return;
+  const cur=t==='m'?tk2.mr:tk2.vr,lc=t==='m'?'sm':'sv';
+  const el=document.getElementById(t+id);if(!el)return;
+  el.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle(lc,i<cur));
+}
+
+function selE(n,silent){
+  ds.energy=n;
+  [1,2,3,4,5].forEach(i=>{const el=document.getElementById('e'+i);if(el)el.classList.toggle('on',i<=n);});
+  const lb=document.getElementById('elbl');if(lb)lb.textContent=EL[n];
+  if(!silent)saveState();
+}
+
+function selW(el,v){
+  document.querySelectorAll('#wasteBtns .sbtn').forEach(b=>b.classList.remove('on-i'));
+  el.classList.add('on-i');ds.waste=v;saveState();
+}
+
+function selM(el,v){
+  document.querySelectorAll('#moodBtns .mood-btn').forEach(b=>b.classList.remove('on-i'));
+  el.classList.add('on-i');ds.mood=v;saveState();
+}
+
+function selTog(type,val){
+  if(type==='read'){
+    ds.read=val;
+    document.getElementById('readY').className='tbtn'+(val==='yes'?' on-yes':'');
+    document.getElementById('readN').className='tbtn'+(val==='no'?' on-no':'');
+  }
+  if(type==='workout'){
+    ds.workout=val;
+    document.getElementById('workoutY').className='tbtn'+(val==='yes'?' on-yes':'');
+    document.getElementById('workoutN').className='tbtn'+(val==='no'?' on-no':'');
+    document.getElementById('workoutTypes').style.display=val==='yes'?'flex':'none';
+  }
+  saveState();
+}
+
+function selWT(el,t){
+  document.querySelectorAll('#workoutTypes .sbtn').forEach(b=>b.classList.remove('on-v'));
+  el.classList.add('on-v');ds.workoutType=t;saveState();
+}
+
+function renderT(){
+  const done=tasks.filter(t=>t.done).length;
+  const tc=document.getElementById('taskcount');
+  if(tc)tc.textContent=`${done} of ${tasks.length} tasks done${done>0?' ✓':''}`;
+  const tl=document.getElementById('tlist');if(!tl)return;
+  tl.innerHTML=tasks.map(t=>`
+    <div class="trow">
+      <div class="ttop">
+        <div class="chk ${t.done?'on':''}" onclick="tog(${t.id})">${t.done?'✓':''}</div>
+        <div class="tmeta">
+          <div class="tname ${t.done?'x':''}">${t.name}</div>
+          <span class="ttype-tag">${t.type}</span>
+        </div>
+        <div class="tpills">${t.scores?`<span class="score-pill pi">I:${t.scores.instinct}</span><span class="score-pill pm">M:${t.scores.mystic}</span><span class="score-pill pv">V:${t.scores.valor}</span>`:''}</div>
+        <button class="del" onclick="delT(${t.id})">✕</button>
+      </div>
+      ${t.done?`<div class="rarea">
+        <div class="rrow"><span class="rlbl lm">💙 Mystic</span><div class="stars" id="m${t.id}">${sHTML(t.id,'m',t.mr,'sm')}</div><span class="rhint">${MH[t.mr]||'How much did this grow you?'}</span></div>
+        <div class="rrow"><span class="rlbl lv">❤️ Valor</span><div class="stars" id="v${t.id}">${sHTML(t.id,'v',t.vr,'sv')}</div><span class="rhint">${VH[t.vr]||'How disciplined were you?'}</span></div>
+      </div>`:''}
+    </div>`).join('');
+}
+
+/* ─────────── PIE CHART ─────────── */
+function drawPie(i,m,v){
+  const c=document.getElementById('pie');if(!c)return;
+  const ctx=c.getContext('2d'),cx=70,cy=70,r=58,tot=i+m+v||1;
+  ctx.clearRect(0,0,140,140);let a=-Math.PI/2;
+  [{val:i,col:'#C8840A'},{val:m,col:'#1A6BBF'},{val:v,col:'#B02828'}].forEach(s=>{
+    const sw=(s.val/tot)*2*Math.PI;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a,a+sw);ctx.closePath();
+    ctx.fillStyle=s.col;ctx.fill();a+=sw;
+  });
+  ctx.beginPath();ctx.arc(cx,cy,30,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();
+  const dn=tasks.filter(t=>t.done).length;
+  ctx.fillStyle='#0F1117';ctx.font='600 13px Inter,sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(`${dn}/${tasks.length}`,cx,cy);
+}
+
+/* ─────────── RESTORE UI ─────────── */
+function restoreUI(){
+  document.getElementById('wakeup').value=ds.wakeup||'07:00';
+  document.getElementById('sleephrs').value=ds.sleep||7;
+  document.getElementById('reflection').value=ds.reflection||'';
+  document.getElementById('skillname').value=ds.skill||'';
+  document.getElementById('skillmins').value=ds.skillMins||0;
+  if(ds.energy)selE(ds.energy,true);
+  if(ds.waste){
+    document.querySelectorAll('#wasteBtns .sbtn').forEach(b=>{
+      if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'${ds.waste}'`))b.classList.add('on-i');
+    });
+  }
+  if(ds.mood){
+    document.querySelectorAll('#moodBtns .mood-btn').forEach(b=>{
+      if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'${ds.mood}'`))b.classList.add('on-i');
+    });
+  }
+  if(ds.read){
+    document.getElementById('readY').className='tbtn'+(ds.read==='yes'?' on-yes':'');
+    document.getElementById('readN').className='tbtn'+(ds.read==='no'?' on-no':'');
+  }
+  if(ds.workout){
+    document.getElementById('workoutY').className='tbtn'+(ds.workout==='yes'?' on-yes':'');
+    document.getElementById('workoutN').className='tbtn'+(ds.workout==='no'?' on-no':'');
+    document.getElementById('workoutTypes').style.display=ds.workout==='yes'?'flex':'none';
+  }
+  if(todayS){
+    document.getElementById('res').style.display='block';
+    document.getElementById('sI').textContent=todayS.instinct+'/10';
+    document.getElementById('sM').textContent=todayS.mystic+'/10';
+    document.getElementById('sV').textContent=todayS.valor+'/10';
+    const tot=todayS.instinct+todayS.mystic+todayS.valor||1;
+    document.getElementById('li').textContent=`Instinct — ${Math.round(todayS.instinct/tot*100)}%`;
+    document.getElementById('lm').textContent=`Mystic — ${Math.round(todayS.mystic/tot*100)}%`;
+    document.getElementById('lv').textContent=`Valor — ${Math.round(todayS.valor/tot*100)}%`;
+    document.getElementById('lt').textContent=`Done — ${todayS.done}/${todayS.total} tasks`;
+    if(todayS.insight)document.getElementById('aib').textContent=todayS.insight;
+    setTimeout(()=>drawPie(todayS.instinct,todayS.mystic,todayS.valor),100);
+  }
+}
+
+/* ─────────── AI ANALYZE ─────────── */
+async function analyze(){
+  const done=tasks.filter(t=>t.done);
+  if(!done.length){alert('Mark at least one task done first.');return;}
+  ds.wakeup=document.getElementById('wakeup').value;
+  ds.sleep=parseInt(document.getElementById('sleephrs').value)||7;
+  ds.reflection=document.getElementById('reflection').value;
+  ds.skill=document.getElementById('skillname').value;
+  ds.skillMins=parseInt(document.getElementById('skillmins').value)||0;
+  const btn=document.getElementById('abtn');
+  btn.disabled=true;btn.textContent='Scoring…';
+  document.getElementById('res').style.display='block';
+  document.getElementById('aib').textContent='Analyzing your day…';
+  const tsum=tasks.map(t=>{
+    let l=`- "${t.name}" [${t.type}] — ${t.done?'DONE':'NOT DONE'}`;
+    if(t.done)l+=` | Mystic:${t.mr}/5(${MH[t.mr]||'unrated'}) | Valor:${t.vr}/5(${VH[t.vr]||'unrated'})`;
+    return l;
+  }).join('\n');
+  const context=`INSTINCT SIGNALS:
+- Tasks: ${done.length}/${tasks.length} done
+- Wake-up: ${ds.wakeup} | Sleep: ${ds.sleep} hrs
+- Energy: ${ds.energy}/5 (${EL[ds.energy]||'not rated'})
+- Time wasted: ${ds.waste||'not rated'} (signal: ${WS[ds.waste]||'?'}/10)
+- Mood: ${ds.mood||'not rated'} (signal: ${MS_MAP[ds.mood]||'?'}/10)
+
+MYSTIC SIGNALS:
+- Read/learned new: ${ds.read||'not specified'}
+- Reflection: "${ds.reflection||'none'}"
+- Skill practiced: ${ds.skill||'none'} for ${ds.skillMins} mins
+
+VALOR SIGNALS:
+- Workout: ${ds.workout||'not specified'}${ds.workoutType?' ('+ds.workoutType+')':''}`;
+  try{
+    const res=await fetch('/api/chat/',{
+      method:'POST',
+      headers:{'Content-Type':'application/json',},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:1000,
+        system:`You are TriTrack's AI scoring engine. Score a person's day across 3 qualities out of 10:
+
+INSTINCT (whole-day execution): Weighted average — tasks done 35%, energy level 20%, time wasted 20%, mood 15%, sleep quality 10%. Low wasted time + high energy + positive mood + adequate sleep = higher score. Missing inputs = infer from what's available.
+
+MYSTIC (personal gain): Base score from per-task Mystic star ratings (multiply by 2). Boost: +1 if read/learned something new, +1 if wrote a meaningful reflection (not blank), +1 if practiced a skill for 30+ mins. Cap at 10.
+
+VALOR (discipline & focus): Base score from per-task Valor star ratings (multiply by 2). Boost: +1.5 for gym/run, +1 for yoga/sports/home workout, +0.5 for walk. Cap at 10.
+
+For each completed task, also give individual scores.
+
+Respond ONLY as valid JSON, no markdown, no explanation outside JSON:
+{"tasks":[{"name":"task name","instinct":7,"mystic":5,"valor":6}],"overall":{"instinct":7,"mystic":6,"valor":5},"insight":"3 sentences: what today's full picture reveals about this person, which quality dominated and which was weakest, one very specific recommendation for tomorrow based on the patterns."}`,
+        messages:[{role:'user',content:`${context}\n\nTask list:\n${tsum}`}]
+      })
+    });
+    const data=await res.json();
+    const raw=data.content?.find(b=>b.type==='text')?.text||'{}';
+    const p=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    p.tasks?.forEach(s=>{
+      const t=tasks.find(t=>t.name===s.name&&t.done);
+      if(t)t.scores={instinct:s.instinct,mystic:s.mystic,valor:s.valor};
+    });
+    renderT();
+    const ov=p.overall||{};
+    const si=Math.round(ov.instinct||0),sm=Math.round(ov.mystic||0),sv=Math.round(ov.valor||0);
+    todayS={instinct:si,mystic:sm,valor:sv,done:done.length,total:tasks.length,insight:p.insight||''};
+    hist[tk()]={date:tk(),dayName:'Today',scores:{instinct:si,mystic:sm,valor:sv},done:done.length,total:tasks.length};
+    const tot=si+sm+sv||1;
+    document.getElementById('sI').textContent=si+'/10';
+    document.getElementById('sM').textContent=sm+'/10';
+    document.getElementById('sV').textContent=sv+'/10';
+    document.getElementById('li').textContent=`Instinct — ${Math.round(si/tot*100)}%`;
+    document.getElementById('lm').textContent=`Mystic — ${Math.round(sm/tot*100)}%`;
+    document.getElementById('lv').textContent=`Valor — ${Math.round(sv/tot*100)}%`;
+    document.getElementById('lt').textContent=`Done — ${done.length}/${tasks.length} tasks`;
+    drawPie(si,sm,sv);
+    document.getElementById('aib').textContent=p.insight||'Great work today!';
+    await persistAll();
+  }catch(e){
+    document.getElementById('aib').textContent='Could not reach AI. Check your connection and try again.';
+  }
+  btn.disabled=false;btn.textContent='✦ Re-analyze';
+}
+
+/* ─────────── CALENDAR ─────────── */
+function renderCal(){
+  document.getElementById('calMonth').textContent=`${MONTHS[calM]} ${calY}`;
+  const firstDay=new Date(calY,calM,1).getDay();
+  const dim=new Date(calY,calM+1,0).getDate();
+  const prev=new Date(calY,calM,0).getDate();
+  let html='';
+  DNS.forEach(d=>{html+=`<div class="cal-dh">${d}</div>`;});
+  for(let i=0;i<firstDay;i++)
+    html+=`<div class="cal-day other-m"><span class="cal-dn">${prev-firstDay+1+i}</span></div>`;
+  for(let d=1;d<=dim;d++){
+    const obj=new Date(calY,calM,d),k=dk(obj);
+    const isT=k===tk(),isSel=k===selCalDate;
+    const hH=hist[k],hC=calTasks[k]&&calTasks[k].length>0;
+    let dots='';
+    if(hH)dots=`<div class="cal-dot" style="background:var(--i);"></div><div class="cal-dot" style="background:var(--m);"></div><div class="cal-dot" style="background:var(--v);"></div>`;
+    else if(hC)dots=`<div class="cal-dot" style="background:var(--sub2);"></div>`;
+    html+=`<div class="cal-day ${isT?'is-today':''} ${isSel?'is-sel':''}" onclick="selDay('${k}')"><span class="cal-dn">${d}</span>${dots?`<div class="cal-dots">${dots}</div>`:''}</div>`;
+  }
+  const rem=(7-((firstDay+dim)%7))%7;
+  for(let i=1;i<=rem;i++)html+=`<div class="cal-day other-m"><span class="cal-dn">${i}</span></div>`;
+  document.getElementById('calGrid').innerHTML=html;
+  if(selCalDate)renderDayPanel(selCalDate);
+  else document.getElementById('calDayPanel').innerHTML='<div style="font-size:13px;color:var(--sub);padding:12px 0;">Tap a day to view or schedule tasks.</div>';
+}
+
+function prevM(){calM--;if(calM<0){calM=11;calY--;}renderCal();}
+function nextM(){calM++;if(calM>11){calM=0;calY++;}renderCal();}
+function selDay(k){selCalDate=k;renderCal();}
+
+function renderDayPanel(k){
+  if(!calTasks[k])calTasks[k]=[];
+  const obj=new Date(k+'T00:00:00');
+  const label=`${DN[obj.getDay()]}, ${MONTHS[obj.getMonth()]} ${obj.getDate()}, ${obj.getFullYear()}`;
+  const dH=hist[k];
+  const scoreBar=dH?`<div class="day-score-pills" style="margin-bottom:14px;">
+    <span class="score-pill pi">⚡ ${dH.scores.instinct}/10</span>
+    <span class="score-pill pm">💙 ${dH.scores.mystic}/10</span>
+    <span class="score-pill pv">❤️ ${dH.scores.valor}/10</span>
+    <span style="font-size:11px;color:var(--sub);margin-left:4px;">${dH.done}/${dH.total} tasks done</span>
+  </div>`:'';
+  const slotsHtml=SLOTS.map(slot=>{
+    const sts=(calTasks[k]||[]).filter(t=>t.slot===slot);
+    const ti=sts.map(t=>`<div class="slot-task"><span class="slot-task-name">${t.name}</span><span class="slot-task-type">${t.type}</span><button class="del" onclick="delCal('${k}','${t.id}')">✕</button></div>`).join('');
+    const inp=addingSlot===k+'|'+slot
+      ?`<div class="slot-inp"><input id="si" placeholder="Task name..." onkeydown="if(event.key==='Enter')saveST('${k}','${slot}')"/><select id="st"><option value="work">Work</option><option value="learning">Learning</option><option value="health">Health</option><option value="personal">Personal</option><option value="creative">Creative</option><option value="social">Social</option></select><button onclick="saveST('${k}','${slot}')">Add</button><button onclick="cancelSlot()">✕</button></div>`
+      :`<button class="slot-add" onclick="openSlot('${k}','${slot}')">+ add task</button>`;
+    return `<div class="slot"><div class="slot-time">${slot}</div><div class="slot-content">${ti}${inp}</div></div>`;
+  }).join('');
+  document.getElementById('calDayPanel').innerHTML=`
+    <div class="cal-date-label">${label}</div>
+    ${scoreBar}
+    <div class="card" style="padding:0 16px;"><div class="time-slots">${slotsHtml}</div></div>`;
+  if(addingSlot&&addingSlot.startsWith(k+'|')){
+    const i=document.getElementById('si');if(i)setTimeout(()=>i.focus(),50);
+  }
+}
+
+function openSlot(k,s){addingSlot=k+'|'+s;renderDayPanel(k);}
+function cancelSlot(){addingSlot=null;if(selCalDate)renderDayPanel(selCalDate);}
+function saveST(k,slot){
+  const i=document.getElementById('si'),s=document.getElementById('st');
+  if(!i||!i.value.trim())return;
+  if(!calTasks[k])calTasks[k]=[];
+  calTasks[k].push({id:nid++,name:i.value.trim(),type:s.value,slot});
+  addingSlot=null;renderDayPanel(k);renderCal();saveState();
+}
+function delCal(k,id){
+  if(calTasks[k])calTasks[k]=calTasks[k].filter(t=>t.id!=id);
+  renderDayPanel(k);renderCal();saveState();
+}
+
+/* ─────────── HISTORY ─────────── */
+function setR(n,btn){
+  selR=n;
+  document.querySelectorAll('.rbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderH();
+}
+function setRC(){
+  const n=parseInt(document.getElementById('cdays').value)||3;
+  selR=Math.min(30,Math.max(1,n));
+  document.querySelectorAll('.rbtn').forEach(b=>b.classList.remove('active'));
+  renderH();
+}
+function renderH(){
+  const keys=Object.keys(hist).sort().reverse().slice(0,selR);
+  document.getElementById('hlbl').textContent=`Last ${selR} day${selR>1?'s':''} breakdown`;
+  if(!keys.length){
+    document.getElementById('dcards').innerHTML='<div class="nodata">No history yet. Score some days first.</div>';
+    ['avgi','avgm','avgv','avgd'].forEach(id=>document.getElementById(id).textContent='—');
+    return;
+  }
+  let si=0,sm=0,sv=0,sd=0;
+  document.getElementById('dcards').innerHTML=keys.map(k=>{
+    const d=hist[k];si+=d.scores.instinct;sm+=d.scores.mystic;sv+=d.scores.valor;sd+=d.done;
+    const cc=calTasks[k]?calTasks[k].length:0;
+    return `<div class="dcard">
+      <div class="dhdr">
+        <span class="dname">${d.dayName} <span style="font-weight:400;color:var(--sub);font-size:12px;">${k}</span></span>
+        <span class="dmeta">${d.done}/${d.total} tasks${cc?' · '+cc+' scheduled':''}</span>
+      </div>
+      <div class="dbars">
+        <div class="dbar"><span class="dbarlbl">Instinct</span><div class="dtrack"><div class="dfill fi" style="width:${d.scores.instinct*10}%"></div></div><span class="dval">${d.scores.instinct}/10</span></div>
+        <div class="dbar"><span class="dbarlbl">Mystic</span><div class="dtrack"><div class="dfill fm" style="width:${d.scores.mystic*10}%"></div></div><span class="dval">${d.scores.mystic}/10</span></div>
+        <div class="dbar"><span class="dbarlbl">Valor</span><div class="dtrack"><div class="dfill fv" style="width:${d.scores.valor*10}%"></div></div><span class="dval">${d.scores.valor}/10</span></div>
+      </div>
+    </div>`;
+  }).join('');
+  const n=keys.length;
+  document.getElementById('avgi').textContent=(si/n).toFixed(1);
+  document.getElementById('avgm').textContent=(sm/n).toFixed(1);
+  document.getElementById('avgv').textContent=(sv/n).toFixed(1);
+  document.getElementById('avgd').textContent=(sd/n).toFixed(1);
+}
+
+async function analyzeH(){
+  const keys=Object.keys(hist).sort().reverse().slice(0,selR);
+  if(!keys.length){alert('No history to analyze.');return;}
+  document.getElementById('haic').style.display='block';
+  document.getElementById('haib').textContent='Analyzing your pattern…';
+  const sum=keys.map(k=>{
+    const d=hist[k];
+    return `${d.dayName}(${k}): Instinct=${d.scores.instinct} Mystic=${d.scores.mystic} Valor=${d.scores.valor} | ${d.done}/${d.total} tasks done`;
+  }).join('\n');
+  try{
+    const res=await fetch('/api/chat/',{
+      method:'POST',
+      headers:{'Content-Type':'application/json',},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:400,
+        system:`You are a performance coach analyzing TriTrack history. Instinct=whole-day execution, Mystic=personal growth, Valor=discipline & focus. Give 3-4 sentences: identify strongest and weakest quality over this period, note any improving or declining trend, give one specific actionable recommendation. Be direct, warm, and specific — avoid generic advice.`,
+        messages:[{role:'user',content:`My last ${selR} days:\n${sum}`}]
+      })
+    });
+    const data=await res.json();
+    document.getElementById('haib').textContent=data.content?.find(b=>b.type==='text')?.text||'Keep going!';
+  }catch(e){
+    document.getElementById('haib').textContent='Could not reach AI. Try again.';
+  }
+}
+
+/* ─────────── INIT ─────────── */
+const todayD=new Date();
+const el=document.getElementById('todayDate');
+if(el)el.textContent=`${DN[todayD.getDay()]}, ${MONTHS[todayD.getMonth()]} ${todayD.getDate()} ${todayD.getFullYear()}`;
+
+loadAll();
+renderChips();
+renderT();
+restoreUI();
+setSavePill('ok');
+</script>
+</body>
+</html>
