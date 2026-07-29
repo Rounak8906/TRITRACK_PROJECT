@@ -22,6 +22,6 @@ def chat(request):
                 },
                 json=body
             )
-            return JsonResponse(response.json())
+            return JsonResponse(response.json(), safe=False)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
