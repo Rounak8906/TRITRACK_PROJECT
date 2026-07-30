@@ -76,4 +76,4 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")

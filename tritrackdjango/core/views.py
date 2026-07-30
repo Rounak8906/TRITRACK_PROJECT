@@ -10,21 +10,28 @@ def index(request):
 
 @csrf_exempt
 def chat(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             body = json.loads(request.body)
+
             response = requests.post(
-                'https://api.anthropic.com/v1/messages',
+                "https://api.groq.com/openai/v1/chat/completions",
                 headers={
-                    'Content-Type': 'application/json',
-                    'x-api-key': settings.ANTHROPIC_API_KEY,
-                    'anthropic-version': '2023-06-01'
+                    "Authorization": f"Bearer {settings.GROQ_API_KEY}",
+                    "Content-Type": "application/json",
                 },
-                json=body,
-                timeout=30
+                json={
+                    "model": "llama-3.3-70b-versatile",
+                    "messages": body.get("messages", []),
+                    "temperature": 0.7,
+                    "max_tokens": body.get("max_tokens", 1000),
+                },
+                timeout=30,
             )
-            data = response.json()
-            return JsonResponse(data, safe=False)
+
+            return JsonResponse(response.json(), safe=False)
+
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-    return JsonResponse({'error': 'Method not allowed'}, status=405)
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Method not allowed"}, status=405)
