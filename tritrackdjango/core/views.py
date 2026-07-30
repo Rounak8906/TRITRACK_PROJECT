@@ -2,36 +2,56 @@ import json
 import requests
 from django.conf import settings
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+
 
 def index(request):
-    return render(request, 'TRITRACK.html')
+    return render(request, "TRITRACK.html")
+
 
 @csrf_exempt
 def chat(request):
-    if request.method == "POST":
-        try:
-            body = json.loads(request.body)
+    if request.method != "POST":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
 
-            response = requests.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {settings.GROQ_API_KEY}",
-                    "Content-Type": "application/json",
-                },
-                json={
-                    "model": "llama-3.3-70b-versatile",
-                    "messages": body.get("messages", []),
-                    "temperature": 0.7,
-                    "max_tokens": body.get("max_tokens", 1000),
-                },
-                timeout=30,
-            )
+    try:
+        body = json.loads(request.body)
 
-            return JsonResponse(response.json(), safe=False)
+        # Build messages for Groq
+        messages = []
 
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
+        if body.get("system"):
+            messages.append({
+                "role": "system",
+                "content": body["system"]
+            })
 
-    return JsonResponse({"error": "Method not allowed"}, status=405)
+        messages.extend(body.get("messages", []))
+
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {settings.GROQ_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "llama-3.3-70b-versatile",
+                "messages": messages,
+                "temperature": 0.3,
+                "max_tokens": body.get("max_tokens", 1000),
+            },
+            timeout=30,
+        )
+
+        # Print response in Render logs
+        print("Groq Response:", response.json())
+
+        return JsonResponse(response.json(), safe=False)
+
+    except Exception as e:
+        print("ERROR:", str(e))
+        return JsonResponse(
+            {"error": str(e)},
+            status=500
+        )
