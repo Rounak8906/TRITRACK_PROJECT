@@ -824,9 +824,11 @@ Respond ONLY as valid JSON, no markdown, no explanation outside JSON:
     });
     const data = await res.json();
 console.log('API response:', data);
-const raw = data.content?.find(b => b.type === 'text')?.text || '{}';
-console.log('Raw text:', raw);
-const clean = raw.replace(/```json|```/g, '').trim();
+const raw = data.choices[0].message.content;
+console.log("Raw AI:", raw);
+
+const clean = raw.replace(/```json|```/g, "").trim();
+
 const p = JSON.parse(clean);
 console.log('Parsed:', p);
 p.tasks?.forEach(s => {
