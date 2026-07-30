@@ -822,29 +822,35 @@ Respond ONLY as valid JSON, no markdown, no explanation outside JSON:
         messages:[{role:'user',content:`${context}\n\nTask list:\n${tsum}`}]
       })
     });
-    const data=await res.json();
-    const raw=data.content?.find(b=>b.type==='text')?.text||'{}';
-    const p=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    p.tasks?.forEach(s=>{
-      const t=tasks.find(t=>t.name===s.name&&t.done);
-      if(t)t.scores={instinct:s.instinct,mystic:s.mystic,valor:s.valor};
-    });
-    renderT();
-    const ov=p.overall||{};
-    const si=Math.round(ov.instinct||0),sm=Math.round(ov.mystic||0),sv=Math.round(ov.valor||0);
-    todayS={instinct:si,mystic:sm,valor:sv,done:done.length,total:tasks.length,insight:p.insight||''};
-    hist[tk()]={date:tk(),dayName:'Today',scores:{instinct:si,mystic:sm,valor:sv},done:done.length,total:tasks.length};
-    const tot=si+sm+sv||1;
-    document.getElementById('sI').textContent=si+'/10';
-    document.getElementById('sM').textContent=sm+'/10';
-    document.getElementById('sV').textContent=sv+'/10';
-    document.getElementById('li').textContent=`Instinct — ${Math.round(si/tot*100)}%`;
-    document.getElementById('lm').textContent=`Mystic — ${Math.round(sm/tot*100)}%`;
-    document.getElementById('lv').textContent=`Valor — ${Math.round(sv/tot*100)}%`;
-    document.getElementById('lt').textContent=`Done — ${done.length}/${tasks.length} tasks`;
-    drawPie(si,sm,sv);
-    document.getElementById('aib').textContent=p.insight||'Great work today!';
-    await persistAll();
+    const data = await res.json();
+console.log('API response:', data);
+const raw = data.content?.find(b => b.type === 'text')?.text || '{}';
+console.log('Raw text:', raw);
+const clean = raw.replace(/```json|```/g, '').trim();
+const p = JSON.parse(clean);
+console.log('Parsed:', p);
+p.tasks?.forEach(s => {
+  const t = tasks.find(t => t.name === s.name && t.done);
+  if(t) t.scores = {instinct: s.instinct, mystic: s.mystic, valor: s.valor};
+});
+renderT();
+const ov = p.overall || {};
+const si = Math.round(ov.instinct || 0);
+const sm = Math.round(ov.mystic || 0);
+const sv = Math.round(ov.valor || 0);
+todayS = {instinct: si, mystic: sm, valor: sv, done: done.length, total: tasks.length, insight: p.insight || ''};
+hist[tk()] = {date: tk(), dayName: 'Today', scores: {instinct: si, mystic: sm, valor: sv}, done: done.length, total: tasks.length};
+const tot = si + sm + sv || 1;
+document.getElementById('sI').textContent = si + '/10';
+document.getElementById('sM').textContent = sm + '/10';
+document.getElementById('sV').textContent = sv + '/10';
+document.getElementById('li').textContent = `Instinct — ${Math.round(si/tot*100)}%`;
+document.getElementById('lm').textContent = `Mystic — ${Math.round(sm/tot*100)}%`;
+document.getElementById('lv').textContent = `Valor — ${Math.round(sv/tot*100)}%`;
+document.getElementById('lt').textContent = `Done — ${done.length}/${tasks.length} tasks`;
+drawPie(si, sm, sv);
+document.getElementById('aib').textContent = p.insight || 'Great work today!';
+await persistAll();
   }catch(e){
     document.getElementById('aib').textContent='Could not reach AI. Check your connection and try again.';
   }

@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 
 def index(request):
-    return render(request, 'TRITRACK.html')
+    return render(request, 'tritrack.html')
 
 @csrf_exempt
 def chat(request):
@@ -20,8 +20,11 @@ def chat(request):
                     'x-api-key': settings.ANTHROPIC_API_KEY,
                     'anthropic-version': '2023-06-01'
                 },
-                json=body
+                json=body,
+                timeout=30
             )
-            return JsonResponse(response.json(), safe=False)
+            data = response.json()
+            return JsonResponse(data, safe=False)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
